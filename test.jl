@@ -1,4 +1,6 @@
+using Base.Test
 include("apriori.jl")
+
 minsupp = 0.6
 T = Array(Array{Int64,1},5)
 T[1] = [1,2]

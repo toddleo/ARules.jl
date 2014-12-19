@@ -1,6 +1,5 @@
 # Find k-freq-itemset in given transactions of items queried together
 using StatsBase
-using Base.Test
 
 # Support Count: σ(x) = | {tᵢ|x ⊆ tᵢ,tᵢ∈ T}|
 function σ(x, T)
