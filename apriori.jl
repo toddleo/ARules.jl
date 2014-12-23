@@ -21,6 +21,9 @@ supp(x,y,T) = σ(∪(x,y),T)/length(T)
 # Confidence of itemset x-> y, which x does not intersect y.
 conf(x,y,T) = σ(∪(x,y),T)/σ(x,T)
 
+# Find frequent itemsets from transactions
+# @T: transaction list
+# @minsupp: minimum support
 function find_freq_itemset(T, minsupp)
     N = length(T)
 
@@ -70,6 +73,9 @@ function gen_candidate(x)
     Cₖ
 end
 
+# Generate rules from frequent itemsets
+# @x: list of frequent itemsets
+# @T: Transaction list
 function gen_rules(x, T)
     if length(x) <= 1; return [] # F contains 1-itemsets only, hence no rules generated.
     end
