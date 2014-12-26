@@ -102,3 +102,5 @@ function ap_genrules!(R, f, H, T)
         ap_genrules(R, f, H_plus_1, T)
     end
 end
+
+# TODO: Closed Frequent Itemset
