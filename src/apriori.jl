@@ -1,32 +1,11 @@
 # Find k-freq-itemset in given transactions of items queried together
 using StatsBase
 
-type Rule
-    P::Array{Int64} # Antecedent
-    Q::Array{Int64} # Consequent
-end
-
-# Support Count: σ(x) = | {tᵢ|x ⊆ tᵢ,tᵢ∈ T}|
-function σ(x, T)
-    ret = 0
-    for t in T
-        ⊆(x,t) && (ret += 1)
-    end
-    ret
-end
-
-# Support of itemset x -> y, which x does not intersect y.
-supp(x,y,T) = σ(∪(x,y),T)/length(T)
-
-# Confidence of itemset x-> y, which x does not intersect y.
-conf(x,y,T) = σ(∪(x,y),T)/σ(x,T)
-
 # Find frequent itemsets from transactions
 # @T: transaction list
 # @minsupp: minimum support
 function find_freq_itemset(T, minsupp)
     N = length(T)
-
     # Find itemset I from transaction list T
     I = Array(Int64,0)
     for t in T
@@ -42,7 +21,7 @@ function find_freq_itemset(T, minsupp)
     push!(F,map(x->[x],filter(i->σ(i,T) >= N * minsupp, I))) # F₁
     while true
         Cₖ = gen_candidate(F[end]) # Generate candidate set Cₖ from Fₖ₋₁
-        Fₖ = filter(c->σ(c,T) >= N * minsupp, Cₖ)
+        Fₖ = filter(c->σ(c,T) >= Nbumanzu * minsupp, Cₖ)
         if !isempty(Fₖ)
             push!(F,Fₖ) # Eliminate infrequent candidates, then set to Fₖ
         else break
