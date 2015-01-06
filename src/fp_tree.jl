@@ -35,20 +35,16 @@ type FPTreeNode <: FPTree
 end
 
 function haschild(idx,childname,N)
-    if length(N[idx].children) < 1 return false; end
-    for c in N[idx].children
-        if !isempty(c) && N[c].name == childname
-            return true
-        end
+    length(getnode(idx,N).children) < 1 && return false
+    for c in getnode(idx,N).children
+        getnode(c,N).name == childname && return true
     end
     return false
 end
 
 function getchildindex(idx,childname,N)
-    for c in N[idx].children
-        if !isempty(c) && N[c].name == childname
-            return c
-        end
+    for c in getnode(idx,N).children
+        getnode(c,N).name == childname && return c
     end
 end
 
@@ -58,23 +54,23 @@ function growchild!(idx, childlist::AbstractArray, N::AbstractArray)
     nchild = length(childlist)
     if nchild < 1 return
     else
-        child_idx = length(N) + 1
+        child_idx = length(N)
         child_name = childlist[1]
         deleteat!(childlist,1)
         n = FPTreeNode(child_idx, child_name, idx)
-        filter!(x -> !isempty(x), N[idx].children)
-        push!(N[idx].children, child_idx)
+        filter!(x -> !isempty(x), getnode(idx,N).children)
+        push!(getnode(idx,N).children, child_idx)
         push!(N, n)
     end
     growchild!(child_idx, childlist,N)
 end
 
 function climb_grow(idx, childlist, N)
-    if isempty(childlist) return 1;end
+    isempty(childlist) && return
     childname = childlist[1]
     if haschild(idx, childname, N)
         childindex = getchildindex(idx, childname,N)
-        N[childindex].cnt += 1
+        getnode(childindex,N).cnt += 1
         deleteat!(childlist,1)
         climb_grow(childindex, childlist, N)
     else growchild!(idx, childlist,N)
