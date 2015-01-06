@@ -85,7 +85,7 @@ end
 function climb_down!(idx, N, path)
     idx == 0 && return path
     push!(path, idx)
-    climb_down!(N[idx].parent, N, path)
+    climb_down!(getnode(idx,N).parent, N, path)
 end
 
 function remove_node(idx, N)
