@@ -4,11 +4,12 @@ function gen_tree(T)
     N = Array(FPTree,0)
     # TODO: Sort T
     # Add null node
-    n0 = FPTreeNode(1,0)
+    n0 = FPTreeNode(0,0)
     push!(N,n0)
     for t in T
-        climb_grow(1,t,N)
+        climb_grow(0,t,N)
     end
+#     @show N
     N
 end
 
@@ -59,12 +60,14 @@ function fp_growth!(N, minsupp_cnt)
 end
 
 function cond_fp_tree(N, paths, minsupp_cnt)
+    last_item = 0
     # update support count on each path
     for n in N # set all count but last to 0
-        isempty(n.children) || (n.cnt = 0) # equivalent to: !isempty(n.children) ? n.cnt = 0 : continue
+        isempty(n.children) || (n.cnt = 0)
     end
     for path in paths
         sort!(path)
+        last_item == 0 && (last_item = getnode(path[end],N).name) # update last_item when not assigned
         for i in length(path)-1:-1:1
             getnode(path[i],N).cnt += getnode(path[i+1],N).cnt
         end
@@ -83,9 +86,26 @@ function cond_fp_tree(N, paths, minsupp_cnt)
     for ridx in remove_idx # prune infrequent items
         N = remove_node(ridx,N)
     end
+    candidates = []
+    paths = []
+    leaves = filter(n->isempty(n.children), N)
+    isempty(leaves) && return candidates
+    for l in leaves
+        path = Array(Int64, 0)
+        climb_down!(l.key,N,path)
+        length(path) >= 2 && push!(paths, path)
+    end
+    paths
+#     last_item
+    # Extract frequent candidate
+    for path in paths
+        length(path) < 2 && continue
+        push!(candidates, path[end-1:end])
+        pop!(path)
+    end
 
-    N
+
 end
 
 N = test()
-fp_growth!(N, 2)
+#fp_growth!(N, 2)
