@@ -79,8 +79,8 @@ end
 
 # Climb down from tree node to root, and record the path
 function climb_down!(idx, N, path)
-    idx == 0 && return path
     push!(path, idx)
+    idx == 0 && return path
     climb_down!(getnode(idx,N).parent, N, path)
 end
 
