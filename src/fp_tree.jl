@@ -21,9 +21,7 @@ type FPTreeNode <: FPTree
         node
     end
 
-    function FPTreeNode(k,v,p,c)    for i in remove_idx
-        N = FPTrees.remove_node(i,N)
-    end
+    function FPTreeNode(k,v,p,c)
         node = new(k,v,1,p)
         if typeof(c) <: Array{Int64}
             node.children = c
@@ -80,7 +78,7 @@ end
 # Climb down from tree node to root, and record the path
 function climb_down!(idx, N, path)
     push!(path, idx)
-    idx == 0 && return path
+    idx == 0 && return sort!(path)
     climb_down!(getnode(idx,N).parent, N, path)
 end
 
@@ -88,7 +86,7 @@ function remove_node(idx, N)
     _N = Array(FPTree,0)
     for n in N
         n.key == idx && continue
-        n.parent == idx && (n.parent = 1) # if parent node is going to be removed, set root(null) node as parent
+        n.parent == idx && (n.parent = 0) # if parent node is going to be removed, set root(null) node as parent
         if !isempty(n.children)
             _children = Array(Int64, 0)
             for i in 1:length(n.children)
